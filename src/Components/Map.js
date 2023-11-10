@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { fireStore } from "../Firebase";
 import { collection, getDocs } from "firebase/firestore";
+
+import saveMarker from '../Assets/Imgs/favoritePlace.png'
 import './Map.css'
 
 function Map() {
@@ -23,6 +25,9 @@ function Map() {
 
         var geocoder = new kakao.maps.services.Geocoder();
         var marker = new kakao.maps.Marker();
+        var imageSrc = saveMarker
+        var imageSize = new kakao.maps.Size(35, 35) // 마커이미지의 크기입니다
+        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize)
 
         const iwContent =
             `
@@ -79,6 +84,10 @@ function Map() {
                             city = '경상남도'
                         }
 
+                        if(region === '어진동' || region === '다정동' || region === '나성동' || region === '가람동' || region === '반곡동' || region === '대평동' || region === '보람동' || region === '소담동' || region === '고운동' || region === '종촌동' || region === '아름동' || region === '도담동' || region === '새롬동' || region === '한솔동' || region === '소정면' || region === '전동면' || region === '전의면' || region === '연서면' || region === '장군면' || region === '금남면' || region === '부강면' || region === '연동면' || region === '연기면'){
+                            region = '세종특별자치시'
+                        }
+
                         if (customOverlay) {
                             customOverlay.setMap(null)
                         }
@@ -118,6 +127,7 @@ function Map() {
                 kakao.maps.event.addListener(map, 'click', clickHandler)
             }
         }
+        
         document.addEventListener('click', handleClick)
         kakao.maps.event.addListener(map, 'click', clickHandler);
 
@@ -166,13 +176,14 @@ function Map() {
                 const markerPosition = new kakao.maps.LatLng(item.receiveLatitude, item.receiveLongitude)
 
                 const marker = new kakao.maps.Marker({
-                    position: markerPosition
+                    position: markerPosition,
+                    image: markerImage
                 })
 
                 marker.setMap(map)
 
                 kakao.maps.event.addListener(marker, 'click', function(){
-                    alert(item.receiveRegionValue)
+                    alert(item.id)
                 })
             })
         }
