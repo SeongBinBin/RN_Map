@@ -1,11 +1,14 @@
 /* eslint-disable */
 /*global kakao */
 import React, { useEffect, useState } from "react";
+import { fireStore } from "../Firebase";
+import { collection, getDocs } from "firebase/firestore";
 import './Map.css'
 
 function Map() {
-    const [latitude, setLatitude] = useState('37.24178468461975'); // 위도 정보
-    const [longitude, setLongitude] = useState('131.86546683725052'); // 경도 정보
+    const [latitude, setLatitude] = useState('37.24178468461975');      // 위도 정보
+    const [longitude, setLongitude] = useState('131.86546683725052');   // 경도 정보
+    const [mapData, setMapData] = useState([]);     // 파이어베이스에서 가져온 값이 담기는 곳
 
     useEffect(() => {
         let container = document.getElementById("map"); // 지도를 담을 영역의 DOM 레퍼런스
@@ -116,23 +119,19 @@ function Map() {
             }
         }
         document.addEventListener('click', handleClick)
-
         kakao.maps.event.addListener(map, 'click', clickHandler);
 
         kakao.maps.event.addListener(map, 'idle', function () {
             searchAddrFromCoords(map.getCenter(), displayCenterInfo);
         });
-
         function searchAddrFromCoords(coords, callback) {
             // 좌표로 행정동 주소 정보를 요청합니다
             geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
         }
-
         function searchDetailAddrFromCoords(coords, callback) {
             // 좌표로 법정동 상세 주소 정보를 요청합니다
             geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
         }
-
         function displayCenterInfo(result, status) {
             if (status === kakao.maps.services.Status.OK) {
                 var infoDiv = document.getElementById('centerAddr');
@@ -153,6 +152,32 @@ function Map() {
             setLongitude(data.longitude);
         });
 
+        const fetchData = async () => {
+            const querySnapshot = await getDocs(collection(fireStore, "MapData"))   // 파이어베이스에서 목록 조회 
+
+            const data = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }))
+
+            setMapData(data)
+
+            data.forEach(item => {      // 파이어베이스에서 가져온 값들로 마커 생성
+                const markerPosition = new kakao.maps.LatLng(item.receiveLatitude, item.receiveLongitude)
+
+                const marker = new kakao.maps.Marker({
+                    position: markerPosition
+                })
+
+                marker.setMap(map)
+
+                kakao.maps.event.addListener(marker, 'click', function(){
+                    alert(item.receiveRegionValue)
+                })
+            })
+        }
+        fetchData()
+        
         return () => {  // 컴포넌트 언마운트 시 이벤트 핸들러 제거
             document.removeEventListener('click', handleClick)
         }
