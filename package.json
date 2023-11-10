@@ -1,5 +1,4 @@
 {
-  "homepage": "https://seongbinbin.github.io/RN_Map",
   "name": "native_map",
   "version": "0.1.0",
   "private": true,
@@ -39,5 +38,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "https://seongbinbin.github.io/RN_Map/"
 }
