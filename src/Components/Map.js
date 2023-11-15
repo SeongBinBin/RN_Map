@@ -8,11 +8,13 @@ import saveMarker from '../Assets/Imgs/favoritePlace.png'
 import './Map.css'
 
 function Map() {
-    const [latitude, setLatitude] = useState('37.24178468461975');      // 위도 정보
-    const [longitude, setLongitude] = useState('131.86546683725052');   // 경도 정보
+    const [latitude, setLatitude] = useState('');      // 위도 정보
+    const [longitude, setLongitude] = useState('');   // 경도 정보
     const [mapData, setMapData] = useState([]);     // 파이어베이스에서 가져온 값이 담기는 곳
+    const [userUID, setUserUID] = useState('')
 
     useEffect(() => {
+        console.log()
         let container = document.getElementById("map"); // 지도를 담을 영역의 DOM 레퍼런스
         let options = {
             center: new kakao.maps.LatLng(latitude, longitude), // 지도의 중심좌표
@@ -53,6 +55,7 @@ function Map() {
                         var parts = detailAddr.split(' ');
                         var city = parts[0]
                         var region = parts[1]
+                        var dong = parts[2]
 
                         if(city === '서울'){
                             city = '서울특별시'
@@ -105,7 +108,8 @@ function Map() {
                         const data = {
                             clickLatLng: mouseEvent.latLng,
                             cityValue: city,
-                            regionValue: region
+                            regionValue: region,
+                            dongValue: dong,
                         };
                         receiveData = data
                     }
@@ -160,32 +164,40 @@ function Map() {
             const data = JSON.parse(e.data);
             setLatitude(data.latitude);
             setLongitude(data.longitude);
+            setUserUID(data.userUID)
         });
-
+        
         const fetchData = async () => {
-            const querySnapshot = await getDocs(collection(fireStore, "MapData"))   // 파이어베이스에서 목록 조회 
+            try{
+                if(userUID){
+                    const userMapDataRef = collection(fireStore, "UserData", userUID, "MapData")
+                    const querySnapshot = await getDocs(userMapDataRef)
 
-            const data = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
+                    const data = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
 
-            setMapData(data)
+                    setMapData(data)
 
-            data.forEach(item => {      // 파이어베이스에서 가져온 값들로 마커 생성
-                const markerPosition = new kakao.maps.LatLng(item.receiveLatitude, item.receiveLongitude)
-
-                const marker = new kakao.maps.Marker({
-                    position: markerPosition,
-                    image: markerImage
-                })
-
-                marker.setMap(map)
-
-                kakao.maps.event.addListener(marker, 'click', function(){
-                    alert(item.id)
-                })
-            })
+                    data.forEach(item => {      // 파이어베이스에서 가져온 값들로 마커 생성
+                        const markerPosition = new kakao.maps.LatLng(item.receiveLatitude, item.receiveLongitude)
+        
+                        const marker = new kakao.maps.Marker({
+                            position: markerPosition,
+                            image: markerImage
+                        })
+        
+                        marker.setMap(map)
+        
+                        kakao.maps.event.addListener(marker, 'click', function(){
+                            alert(item.id)
+                        })
+                    })
+                }
+            }catch(error){
+                console.error(error)
+            }
         }
         fetchData()
         
