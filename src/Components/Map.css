@@ -15,24 +15,23 @@
     position: relative;
     bottom: 55px;
     display: flex;
+    gap: 3px;
 }
 .travelRecord{
-    padding: 5px;
-    background-color: skyblue;
-    border: 1px solid black;
-}
-.visitLater{
-    padding: 5px;
-    background-color: beige;
-    border: 1px solid black;
-    border-left: none;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border-radius: 50%;
+    background-size: cover;
+    background-image: url(../Assets/Imgs/check.png);
 }
 .closeMarker{
-    padding: 5px;
-    background-color: black;
-    color: white;
-    border: 1px solid black;
-    border-left: none;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border-radius: 50%;
+    background-size: cover;
+    background-image: url(../Assets/Imgs/cancel.png);
 }
 
 .regionTitle {font-weight:bold;display:block;}

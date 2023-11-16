@@ -5,11 +5,13 @@ import { fireStore } from "../Firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 import saveMarker from '../Assets/Imgs/favoritePlace.png'
+import check from '../Assets/Imgs/check.png'
+import cancel from '../Assets/Imgs/cancel.png'
 import './Map.css'
 
 function Map() {
-    const [latitude, setLatitude] = useState('');      // 위도 정보
-    const [longitude, setLongitude] = useState('');   // 경도 정보
+    const [latitude, setLatitude] = useState('37.83281531860611');      // 위도 정보
+    const [longitude, setLongitude] = useState('127.51017941203274');   // 경도 정보
     const [mapData, setMapData] = useState([]);     // 파이어베이스에서 가져온 값이 담기는 곳
     const [userUID, setUserUID] = useState('')
 
@@ -30,14 +32,13 @@ function Map() {
         var imageSrc = saveMarker
         var imageSize = new kakao.maps.Size(35, 35) // 마커이미지의 크기입니다
         var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize)
-
+        
         const iwContent =
             `
         <div>
             <div class="customOverlay">
-                <span class="travelRecord">여행 기록</span>
-                <span class="visitLater">가볼 곳</span>
-                <span class="closeMarker">X</span>
+                <span class="travelRecord"></span>
+                <span class="closeMarker"></span>
             </div>
         </div>
         `;
@@ -109,6 +110,7 @@ function Map() {
                             clickLatLng: mouseEvent.latLng,
                             cityValue: city,
                             regionValue: region,
+                            regionFullName: detailAddr,
                             dongValue: dong,
                         };
                         receiveData = data
@@ -181,7 +183,7 @@ function Map() {
                     setMapData(data)
 
                     data.forEach(item => {      // 파이어베이스에서 가져온 값들로 마커 생성
-                        const markerPosition = new kakao.maps.LatLng(item.receiveLatitude, item.receiveLongitude)
+                        const markerPosition = new kakao.maps.LatLng(item.latitude, item.longitude)
         
                         const marker = new kakao.maps.Marker({
                             position: markerPosition,
