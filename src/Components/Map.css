@@ -15,23 +15,23 @@
     position: relative;
     bottom: 55px;
     display: flex;
-    gap: 3px;
+    gap: 5px;
 }
 .travelRecord{
     width: 30px;
     height: 30px;
-    background-color: white;
+    /* background-color: white; */
     border-radius: 50%;
     background-size: cover;
-    background-image: url(../Assets/Imgs/check.png);
+    background-image: url(../Assets/Imgs/check5.png);
 }
 .closeMarker{
     width: 30px;
     height: 30px;
-    background-color: white;
+    /* background-color: white; */
     border-radius: 50%;
     background-size: cover;
-    background-image: url(../Assets/Imgs/cancel.png);
+    background-image: url(../Assets/Imgs/close.png);
 }
 
 .regionTitle {font-weight:bold;display:block;}

@@ -5,13 +5,12 @@ import { fireStore } from "../Firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 import saveMarker from '../Assets/Imgs/favoritePlace.png'
-import check from '../Assets/Imgs/check.png'
-import cancel from '../Assets/Imgs/cancel.png'
+import customMarker from '../Assets/Imgs/recordPlace.png'
 import './Map.css'
 
 function Map() {
-    const [latitude, setLatitude] = useState('37.83281531860611');      // 위도 정보
-    const [longitude, setLongitude] = useState('127.51017941203274');   // 경도 정보
+    const [latitude, setLatitude] = useState('');      // 위도 정보
+    const [longitude, setLongitude] = useState('');   // 경도 정보
     const [mapData, setMapData] = useState([]);     // 파이어베이스에서 가져온 값이 담기는 곳
     const [userUID, setUserUID] = useState('')
 
@@ -30,8 +29,10 @@ function Map() {
         var geocoder = new kakao.maps.services.Geocoder();
         var marker = new kakao.maps.Marker();
         var imageSrc = saveMarker
-        var imageSize = new kakao.maps.Size(35, 35) // 마커이미지의 크기입니다
+        var imageSize = new kakao.maps.Size(40, 40) // 마커이미지의 크기입니다
         var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize)
+        var customMarkerSrc = customMarker
+        var customMarkerImage = new kakao.maps.MarkerImage(customMarkerSrc, imageSize)
         
         const iwContent =
             `
@@ -102,6 +103,7 @@ function Map() {
 
                         customOverlay.setMap(map);
                         marker.setPosition(mouseEvent.latLng);
+                        marker.setImage(customMarkerImage);
                         marker.setMap(map);
 
                         kakao.maps.event.removeListener(map, 'click', clickHandler);
