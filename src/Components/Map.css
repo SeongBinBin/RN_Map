@@ -25,7 +25,15 @@
     background-size: cover;
     background-image: url(../Assets/Imgs/check5.png);
 }
-.closeMarker{
+.editButton{
+    width: 30px;
+    height: 30px;
+    /* background-color: white; */
+    border-radius: 50%;
+    background-size: cover;
+    background-image: url(../Assets/Imgs/edit.png);
+}
+.closeMarker, .closeButton{
     width: 30px;
     height: 30px;
     /* background-color: white; */

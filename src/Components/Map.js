@@ -35,17 +35,24 @@ function Map() {
         var customMarkerImage = new kakao.maps.MarkerImage(customMarkerSrc, imageSize)
         
         const iwContent =
-            `
-        <div>
+        `<div>
             <div class="customOverlay">
                 <span class="travelRecord"></span>
                 <span class="closeMarker"></span>
             </div>
-        </div>
-        `;
+        </div>`
+
+        const iwSecondContent =
+        `<div>
+            <div class="customOverlay">
+                <span class="editButton"></span>
+                <span class="closeButton"></span>
+            </div>
+        </div>`
 
         var customOverlay = null
         var receiveData = null
+        var receiveIdData = null
 
         searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 
@@ -114,6 +121,7 @@ function Map() {
                             regionValue: region,
                             regionFullName: detailAddr,
                             dongValue: dong,
+                            type: 'receiveData'
                         };
                         receiveData = data
                     }
@@ -195,9 +203,38 @@ function Map() {
                         marker.setMap(map)
         
                         kakao.maps.event.addListener(marker, 'click', function(){
-                            alert(item.id)
+                            if(customOverlay){
+                                customOverlay.setMap(null)
+                            }
+
+                            customOverlay = new kakao.maps.CustomOverlay({
+                                position: marker.getPosition(),
+                                content: iwSecondContent,
+                            })
+
+                            customOverlay.setMap(map)
+                            kakao.maps.event.removeListener(map, 'click', clickHandler);
+                            const idData = {
+                                idValue: item.id,
+                                type: 'receiveIdData'
+                            }
+                            receiveIdData = idData
                         })
                     })
+                    function handleClick(event){
+                        if (event.target.classList.contains('editButton')) {
+                            window.ReactNativeWebView.postMessage(JSON.stringify(receiveIdData))  // 리액트에서 RN으로 값 전송
+                        }else if(event.target.classList.contains('closeButton')){
+                            if (marker) {
+                                marker.setMap(null)
+                            }
+                            if (customOverlay) {
+                                customOverlay.setMap(null)
+                            }
+                            kakao.maps.event.addListener(map, 'click', clickHandler)
+                        }
+                    }
+                    document.addEventListener('click', handleClick)
                 }
             }catch(error){
                 console.error(error)
